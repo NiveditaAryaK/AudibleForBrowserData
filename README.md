@@ -11,7 +11,7 @@ This is a browser text-to-speech project with two ways to run it:
 1. Install Python dependencies:
 
 ```powershell
-py -3.13 -m pip install -r requirements.txt
+py -3.13 -m pip install -r requirements-local.txt
 ```
 
 2. Start the local server:
@@ -52,6 +52,9 @@ npm.cmd install
 ```powershell
 npx vercel
 ```
+
+If Vercel reports a Lambda storage or dependency-size error, make sure it is only deploying the Node API.
+This repo includes a local Python backend for desktop use, but Vercel should ignore it through `.vercelignore`.
 
 5. In the extension, open `API settings` and set the base URL to:
 
