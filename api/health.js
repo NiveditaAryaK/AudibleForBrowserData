@@ -1,24 +1,14 @@
-function corsHeaders() {
-  return {
-    "Access-Control-Allow-Origin": "*",
-    "Cache-Control": "no-store"
-  };
+function applyCors(res) {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Cache-Control", "no-store");
 }
 
-export default async function handler() {
-  return new Response(
-    JSON.stringify({
-      ok: true,
-      deployed: true,
-      provider: "vercel",
-      model: process.env.HF_TTS_MODEL || "facebook/mms-tts-eng"
-    }),
-    {
-      status: 200,
-      headers: {
-        "Content-Type": "application/json",
-        ...corsHeaders()
-      }
-    }
-  );
+export default function handler(_req, res) {
+  applyCors(res);
+  res.status(200).json({
+    ok: true,
+    deployed: true,
+    provider: "vercel",
+    model: process.env.HF_TTS_MODEL || "facebook/mms-tts-eng"
+  });
 }

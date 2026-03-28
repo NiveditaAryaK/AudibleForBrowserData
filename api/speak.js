@@ -3,23 +3,15 @@ import { InferenceClient } from "@huggingface/inference";
 const MODEL_ID = process.env.HF_TTS_MODEL || "facebook/mms-tts-eng";
 const MAX_TEXT_LENGTH = 4000;
 
-function corsHeaders() {
-  return {
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "POST, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type",
-    "Cache-Control": "no-store"
-  };
+function applyCors(res) {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  res.setHeader("Cache-Control", "no-store");
 }
 
-function json(status, payload) {
-  return new Response(JSON.stringify(payload), {
-    status,
-    headers: {
-      "Content-Type": "application/json",
-      ...corsHeaders()
-    }
-  });
+function json(res, status, payload) {
+  res.status(status).json(payload);
 }
 
 function cleanText(text) {
@@ -28,29 +20,28 @@ function cleanText(text) {
 
 export const maxDuration = 60;
 
-export default async function handler(request) {
-  if (request.method === "OPTIONS") {
-    return new Response(null, { status: 204, headers: corsHeaders() });
+export default async function handler(req, res) {
+  applyCors(res);
+
+  if (req.method === "OPTIONS") {
+    res.status(204).end();
+    return;
   }
 
-  if (request.method !== "POST") {
-    return json(405, { detail: "Method not allowed." });
+  if (req.method !== "POST") {
+    json(res, 405, { detail: "Method not allowed." });
+    return;
   }
 
   if (!process.env.HF_TOKEN) {
-    return json(500, { detail: "HF_TOKEN is not configured on the server." });
+    json(res, 500, { detail: "HF_TOKEN is not configured on the server." });
+    return;
   }
 
-  let body;
-  try {
-    body = await request.json();
-  } catch {
-    return json(400, { detail: "Invalid JSON body." });
-  }
-
-  const text = cleanText(body?.text || "");
+  const text = cleanText(req.body?.text || "");
   if (!text) {
-    return json(400, { detail: "No readable text was provided." });
+    json(res, 400, { detail: "No readable text was provided." });
+    return;
   }
 
   try {
@@ -60,16 +51,12 @@ export default async function handler(request) {
       inputs: text
     });
 
-    return new Response(audio, {
-      status: 200,
-      headers: {
-        "Content-Type": "audio/wav",
-        ...corsHeaders()
-      }
-    });
+    const buffer = Buffer.from(await audio.arrayBuffer());
+    res.setHeader("Content-Type", "audio/wav");
+    res.status(200).send(buffer);
   } catch (error) {
     const message =
       error instanceof Error ? error.message : "Text-to-speech failed.";
-    return json(502, { detail: message });
+    json(res, 502, { detail: message });
   }
 }
