@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quick Browser Reader</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <main class="card">
+      <h1>Quick Browser Reader</h1>
+      <p class="subtle">Select text on any page, or read the page body aloud.</p>
+      <div class="actions">
+        <button id="readSelection">Read selection</button>
+        <button id="readPage">Read page</button>
+        <button id="stop" class="secondary">Stop</button>
+        <button id="settings" class="secondary">API settings</button>
+      </div>
+      <p id="status" class="status">Ready.</p>
+    </main>
+    <script src="popup.js"></script>
+  </body>
+</html>

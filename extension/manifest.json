@@ -1,0 +1,32 @@
+{
+  "manifest_version": 3,
+  "name": "Quick Browser Reader",
+  "version": "0.1.0",
+  "description": "Reads selected text or the current page aloud through a local Hugging Face TTS server.",
+  "permissions": [
+    "activeTab",
+    "tabs",
+    "storage"
+  ],
+  "host_permissions": [
+    "http://127.0.0.1:8000/*",
+    "http://localhost:8000/*",
+    "<all_urls>"
+  ],
+  "action": {
+    "default_title": "Quick Browser Reader",
+    "default_popup": "popup.html"
+  },
+  "options_page": "options.html",
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ]
+}
