@@ -1,0 +1,11 @@
+env/
+node_modules/
+__pycache__/
+.venv/
+venv/
+hf-cache/
+*.pyc
+*.wav
+app.py
+requirements.txt
+start_server.bat
