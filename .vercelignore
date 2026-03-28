@@ -6,6 +6,6 @@ venv/
 hf-cache/
 *.pyc
 *.wav
-local_tts_app.py
+local_backend/
 requirements.txt
 start_server.bat

@@ -17,7 +17,7 @@ py -3.13 -m pip install -r requirements-local.txt
 2. Start the local server:
 
 ```powershell
-py -3.13 -m uvicorn local_tts_app:app --host 127.0.0.1 --port 8000
+py -3.13 -m uvicorn local_backend.local_tts_app:app --host 127.0.0.1 --port 8000
 ```
 
 The first run downloads the Hugging Face model, so it can take a little while.
